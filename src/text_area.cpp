@@ -12,22 +12,12 @@ namespace munin {
 struct text_area::impl
 {
     // ======================================================================
-    // CONSTRUCTOR
-    // ======================================================================
-    impl(text_area &self)
-      : self_(self)
-    {
-    }
-
-    // ======================================================================
     // LAYOUT_TEXT
     // ======================================================================
-    void layout_text()
+    void layout_text(terminalpp::coordinate_type width)
     {
         laid_out_text_.clear();
         laid_out_text_.emplace_back();
-
-        auto const text_area_width = self_.get_size().width;
 
         for(auto const &ch : text_)
         {
@@ -42,7 +32,7 @@ struct text_area::impl
                 last_line += ch;
             }
             
-            if (last_line.size() == text_area_width)
+            if (last_line.size() == width)
             {
                 laid_out_text_.emplace_back();
             }
@@ -52,9 +42,10 @@ struct text_area::impl
     // ======================================================================
     // MOVE_CARET
     // ======================================================================
-    void move_caret(text_area::text_index to_index)
+    void move_caret(
+        text_area::text_index to_index, 
+        terminalpp::coordinate_type text_area_width)
     {
-        auto const text_area_width = self_.get_size().width;
         auto last_newline_index = text_area::text_index{0};
         
         // For now, assume advance.
@@ -87,12 +78,19 @@ struct text_area::impl
                 ++cursor_position_.y;
             }
         }
-
-        self_.on_caret_position_changed();
-        self_.on_cursor_position_changed();
     }
 
-    text_area &self_;
+    // ======================================================================
+    // MOVE_CURSOR
+    // ======================================================================
+    void move_cursor(
+        terminalpp::point to_position, 
+        terminalpp::coordinate_type text_area_width)
+    {
+        caret_position_ = 0;
+        cursor_position_ = {};//to_position;
+    }
+
     terminalpp::string text_;
     std::vector<terminalpp::string> laid_out_text_;
 
@@ -104,7 +102,7 @@ struct text_area::impl
 // CONSTRUCTOR
 // ==========================================================================
 text_area::text_area()
-  : pimpl_(boost::make_unique<impl>(*this))
+  : pimpl_(boost::make_unique<impl>())
 {
 }
 
@@ -135,7 +133,12 @@ text_area::text_index text_area::get_length() const
 void text_area::insert_text(terminalpp::string const &text)
 {
     insert_text(text, pimpl_->caret_position_);
-    pimpl_->move_caret(pimpl_->caret_position_ + text.size());
+    pimpl_->move_caret(
+        pimpl_->caret_position_ + text.size(),
+        get_size().width);
+
+    on_caret_position_changed();
+    on_cursor_position_changed();
 }
 
 // ==========================================================================
@@ -153,7 +156,7 @@ void text_area::insert_text(
     on_preferred_size_changed();
     on_redraw({{{}, get_size()}});
     
-    pimpl_->layout_text();
+    pimpl_->layout_text(get_size().width);
 }
 
 // ==========================================================================
@@ -191,6 +194,16 @@ terminalpp::extent text_area::do_get_preferred_size() const
 terminalpp::point text_area::do_get_cursor_position() const
 {
     return pimpl_->cursor_position_;
+}
+
+// ==========================================================================
+// DO_SET_CURSOR_POSITION
+// ==========================================================================
+void text_area::do_set_cursor_position(terminalpp::point const &position)
+{
+    pimpl_->move_cursor(position, get_size().width);
+    on_cursor_position_changed();
+    on_caret_position_changed();
 }
 
 // ==========================================================================
