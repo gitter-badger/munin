@@ -56,6 +56,7 @@ add_library(munin)
 
 target_sources(munin
     PRIVATE
+        include/munin/animation_timer.hpp
         include/munin/basic_component.hpp
         include/munin/brush.hpp
         include/munin/button.hpp
@@ -85,6 +86,7 @@ target_sources(munin
         include/munin/detail/json_adaptors.hpp
     
         src/aligned_layout.cpp
+        src/animation_timer.cpp
         src/basic_component.cpp
         src/brush.cpp
         src/button.cpp
@@ -151,6 +153,7 @@ target_sources(munin_tester
         test/src/window/window_test.hpp
         test/include/fill_canvas.hpp
         test/include/redraw.hpp
+        test/include/mock/animation_timer.hpp
         test/include/mock/component.hpp
         test/include/mock/layout.hpp
         test/src/fill_canvas.cpp
@@ -159,6 +162,7 @@ target_sources(munin_tester
         test/src/mock/frame.cpp
         test/src/algorithm/algorithm_test.cpp
         test/src/aligned_layout/aligned_layout_test.cpp
+        test/src/animation/animation_test.cpp
         test/src/basic_component/new_basic_component_test.cpp
         test/src/basic_component/unfocused_basic_component_test.cpp
         test/src/basic_component/focused_basic_component_test.cpp

@@ -8,7 +8,7 @@ namespace munin {
 // CONSTRUCTOR
 // ==========================================================================
 filled_box::filled_box(terminalpp::element const &element)
-  : filled_box([element](auto){return element;})
+  : filled_box([element](const auto&){return element;})
 {
 }
 

@@ -46,8 +46,10 @@ terminalpp::element &render_surface::column_proxy::operator[](
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-render_surface::render_surface(terminalpp::canvas &cvs)
-  : render_surface(cvs, default_capabilities)
+render_surface::render_surface(
+    terminalpp::canvas &cvs,
+    animation_timer& animation_timer)
+  : render_surface(cvs, default_capabilities, animation_timer)
 {
 }
 
@@ -56,9 +58,11 @@ render_surface::render_surface(terminalpp::canvas &cvs)
 // ==========================================================================
 render_surface::render_surface(
     terminalpp::canvas &cvs,
-    render_surface_capabilities const &capabilities)
+    render_surface_capabilities const &capabilities,
+    animation_timer& animation_timer)
   : canvas_(cvs),
-    capabilities_(capabilities)
+    capabilities_(capabilities),
+    animation_timer_(animation_timer)
 {
 }
 
@@ -104,6 +108,14 @@ terminalpp::element &render_surface::get_element(
     terminalpp::coordinate_type row)
 {
     return canvas_[column + offset_.width][row + offset_.height];
+}
+
+// ==========================================================================
+// NOW
+// ==========================================================================
+std::chrono::steady_clock::time_point render_surface::now() const
+{
+    return animation_timer_.now();
 }
 
 }
