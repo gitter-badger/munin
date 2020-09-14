@@ -1,6 +1,6 @@
 #pragma once
 #include <munin/component.hpp>
-#include <munin/render_surface.hpp>
+#include <munin/render_context.hpp>
 #include <gmock/gmock.h>
 
 class mock_component : public munin::component
@@ -111,7 +111,7 @@ public :
     /// should be drawn.
     //* =====================================================================
     MOCK_CONST_METHOD2(do_draw, 
-        void (munin::render_surface &, terminalpp::rectangle const &));
+        void (munin::render_context &, terminalpp::rectangle const &));
 
     //* =====================================================================
     /// \brief Called by event().  Derived classes must override this

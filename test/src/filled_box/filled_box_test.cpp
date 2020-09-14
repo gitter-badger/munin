@@ -1,5 +1,5 @@
 #include <munin/filled_box.hpp>
-#include <munin/render_surface.hpp>
+#include <munin/render_context.hpp>
 #include <gtest/gtest.h>
 
 TEST(make_fill, makes_a_new_filled_box)
@@ -31,8 +31,9 @@ TEST(a_filled_box, draws_its_fill)
 
     terminalpp::canvas canvas({2, 2});
     munin::render_surface surface{canvas};
+    munin::render_context context{surface, munin::default_animation_timer};
     
-    filled_box.draw(surface, {{}, {1, 1}});
+    filled_box.draw(context, {{}, {1, 1}});
 
     ASSERT_EQ(terminalpp::element('Y'), canvas[0][0]);
     ASSERT_EQ(terminalpp::element(' '), canvas[0][1]);
@@ -47,9 +48,10 @@ TEST(a_filled_box, draws_only_within_given_region)
 
     terminalpp::canvas canvas({3, 4});
     munin::render_surface surface{canvas};
-    surface.offset_by({1, 1});
+    munin::render_context context{surface, munin::default_animation_timer};
+    context.offset_by({1, 1});
 
-    filled_box.draw(surface, {{}, {1, 2}});
+    filled_box.draw(context, {{}, {1, 2}});
 
     ASSERT_EQ(terminalpp::element(' '), canvas[0][0]);
     ASSERT_EQ(terminalpp::element(' '), canvas[1][0]);

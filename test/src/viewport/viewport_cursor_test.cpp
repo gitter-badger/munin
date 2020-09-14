@@ -1,5 +1,5 @@
 #include "viewport_test.hpp"
-#include <munin/render_surface.hpp>
+#include <munin/render_context.hpp>
 #include <munin/viewport.hpp>
 #include <terminalpp/canvas.hpp>
 #include <gtest/gtest.h>
@@ -57,8 +57,9 @@ TEST_P(viewport_cursor_tracking_test, viewports_track_cursor_movement)
 
     terminalpp::canvas cvs{{5, 5}};
     munin::render_surface surface{cvs};
-    surface.offset_by({1, 1});
-    viewport_->draw(surface, {{}, viewport_->get_size()});
+    munin::render_context context{surface, munin::default_animation_timer};
+    context.offset_by({1, 1});
+    viewport_->draw(context, {{}, viewport_->get_size()});
 };
 
 

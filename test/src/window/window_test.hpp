@@ -8,7 +8,7 @@ class a_window : public testing::Test
 {
 protected:
     a_window()
-      : window_(new munin::window(content_))
+      : window_(new munin::window(content_, munin::default_animation_timer))
     {
     }
     

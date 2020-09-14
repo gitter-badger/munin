@@ -1,5 +1,5 @@
 #include "munin/brush.hpp"
-#include "munin/render_surface.hpp"
+#include "munin/render_context.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <boost/range/algorithm/max_element.hpp>
 #include <boost/range/adaptor/transformed.hpp>
@@ -87,10 +87,10 @@ terminalpp::extent brush::do_get_preferred_size() const
 // DO_DRAW
 // ==========================================================================
 void brush::do_draw(
-    render_surface &surface, terminalpp::rectangle const &region) const
+    render_context &context, terminalpp::rectangle const &region) const
 {
     terminalpp::for_each_in_region(
-        surface,
+        context,
         region,
         [this](terminalpp::element &elem, 
                terminalpp::coordinate_type column, 

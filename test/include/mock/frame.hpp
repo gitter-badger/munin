@@ -1,7 +1,7 @@
 #pragma once
 
 #include <munin/frame.hpp>
-#include <munin/render_surface.hpp>
+#include <munin/render_context.hpp>
 #include <gmock/gmock.h>
 
 class mock_frame : public munin::frame
@@ -112,7 +112,7 @@ public :
     /// should be drawn.
     //* =====================================================================
     MOCK_CONST_METHOD2(do_draw, 
-        void (munin::render_surface &, terminalpp::rectangle const &));
+        void (munin::render_context &, terminalpp::rectangle const &));
 
     //* =====================================================================
     /// \brief Called by event().  Derived classes must override this

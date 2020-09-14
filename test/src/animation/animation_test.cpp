@@ -1,5 +1,5 @@
 #include <munin/basic_component.hpp>
-#include <munin/render_surface.hpp>
+#include <munin/render_context.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include "mock/animation_timer.hpp"
 #include <gtest/gtest.h>
@@ -34,15 +34,15 @@ private:
     /// in order to draw onto the passed context.  A component must only draw
     /// the part of itself specified by the region.
     ///
-    /// \param surface the surface on which the component should draw itself.
+    /// \param context the context on which the component should draw itself.
     /// \param region the region relative to this component's origin that
     /// should be drawn.
     //* =====================================================================
     void do_draw(
-        munin::render_surface &surface,
+        munin::render_context &context,
         terminalpp::rectangle const &region) const override
     {
-        auto const now = surface.now();
+        auto const now = context.now();
 
         if (!frame_0_time)
         {
@@ -54,7 +54,7 @@ private:
                         : after_element;
 
         terminalpp::for_each_in_region(
-            surface,
+            context,
             region,
             [=](terminalpp::element &elem,
                 terminalpp::coordinate_type column,
@@ -82,7 +82,8 @@ protected:
 
     terminalpp::canvas canvas_{{3, 3}};
     mock_animation_timer animation_timer_;
-    munin::render_surface surface_{canvas_, animation_timer_};
+    munin::render_surface surface_{canvas_};
+    munin::render_context context_{surface_, animation_timer_};
 };
 
 }
@@ -93,17 +94,17 @@ TEST_F(an_animated_component, draws_initial_frame_at_time_0)
     ON_CALL(animation_timer_, now())
         .WillByDefault(Return(time_now));
 
-    component_->draw(surface_, {{0, 0}, {3, 3}});
+    component_->draw(context_, {{0, 0}, {3, 3}});
 
-    ASSERT_EQ(before_element, surface_[0][0]);
-    ASSERT_EQ(before_element, surface_[1][0]);
-    ASSERT_EQ(before_element, surface_[2][0]);
-    ASSERT_EQ(before_element, surface_[0][1]);
-    ASSERT_EQ(before_element, surface_[1][1]);
-    ASSERT_EQ(before_element, surface_[2][1]);
-    ASSERT_EQ(before_element, surface_[0][2]);
-    ASSERT_EQ(before_element, surface_[1][2]);
-    ASSERT_EQ(before_element, surface_[2][2]);
+    ASSERT_EQ(before_element, context_[0][0]);
+    ASSERT_EQ(before_element, context_[1][0]);
+    ASSERT_EQ(before_element, context_[2][0]);
+    ASSERT_EQ(before_element, context_[0][1]);
+    ASSERT_EQ(before_element, context_[1][1]);
+    ASSERT_EQ(before_element, context_[2][1]);
+    ASSERT_EQ(before_element, context_[0][2]);
+    ASSERT_EQ(before_element, context_[1][2]);
+    ASSERT_EQ(before_element, context_[2][2]);
 }
 
 TEST_F(an_animated_component, draws_initial_frame_before_change_time)
@@ -112,22 +113,22 @@ TEST_F(an_animated_component, draws_initial_frame_before_change_time)
     ON_CALL(animation_timer_, now())
         .WillByDefault(Return(time_now));
 
-    component_->draw(surface_, {{0, 0}, {3, 3}});
+    component_->draw(context_, {{0, 0}, {3, 3}});
 
     ON_CALL(animation_timer_, now())
         .WillByDefault(Return(time_now + (frame_change_time - 1ms)));
 
-    component_->draw(surface_, {{0, 0}, {3, 3}});
+    component_->draw(context_, {{0, 0}, {3, 3}});
 
-    ASSERT_EQ(before_element, surface_[0][0]);
-    ASSERT_EQ(before_element, surface_[1][0]);
-    ASSERT_EQ(before_element, surface_[2][0]);
-    ASSERT_EQ(before_element, surface_[0][1]);
-    ASSERT_EQ(before_element, surface_[1][1]);
-    ASSERT_EQ(before_element, surface_[2][1]);
-    ASSERT_EQ(before_element, surface_[0][2]);
-    ASSERT_EQ(before_element, surface_[1][2]);
-    ASSERT_EQ(before_element, surface_[2][2]);
+    ASSERT_EQ(before_element, context_[0][0]);
+    ASSERT_EQ(before_element, context_[1][0]);
+    ASSERT_EQ(before_element, context_[2][0]);
+    ASSERT_EQ(before_element, context_[0][1]);
+    ASSERT_EQ(before_element, context_[1][1]);
+    ASSERT_EQ(before_element, context_[2][1]);
+    ASSERT_EQ(before_element, context_[0][2]);
+    ASSERT_EQ(before_element, context_[1][2]);
+    ASSERT_EQ(before_element, context_[2][2]);
 }
 
 TEST_F(an_animated_component, draws_updated_frame_after_change_time)
@@ -136,20 +137,20 @@ TEST_F(an_animated_component, draws_updated_frame_after_change_time)
     ON_CALL(animation_timer_, now())
         .WillByDefault(Return(time_now));
 
-    component_->draw(surface_, {{0, 0}, {3, 3}});
+    component_->draw(context_, {{0, 0}, {3, 3}});
 
     ON_CALL(animation_timer_, now())
         .WillByDefault(Return(time_now + frame_change_time));
 
-    component_->draw(surface_, {{0, 0}, {3, 3}});
+    component_->draw(context_, {{0, 0}, {3, 3}});
 
-    ASSERT_EQ(after_element, surface_[0][0]);
-    ASSERT_EQ(after_element, surface_[1][0]);
-    ASSERT_EQ(after_element, surface_[2][0]);
-    ASSERT_EQ(after_element, surface_[0][1]);
-    ASSERT_EQ(after_element, surface_[1][1]);
-    ASSERT_EQ(after_element, surface_[2][1]);
-    ASSERT_EQ(after_element, surface_[0][2]);
-    ASSERT_EQ(after_element, surface_[1][2]);
-    ASSERT_EQ(after_element, surface_[2][2]);
+    ASSERT_EQ(after_element, context_[0][0]);
+    ASSERT_EQ(after_element, context_[1][0]);
+    ASSERT_EQ(after_element, context_[2][0]);
+    ASSERT_EQ(after_element, context_[0][1]);
+    ASSERT_EQ(after_element, context_[1][1]);
+    ASSERT_EQ(after_element, context_[2][1]);
+    ASSERT_EQ(after_element, context_[0][2]);
+    ASSERT_EQ(after_element, context_[1][2]);
+    ASSERT_EQ(after_element, context_[2][2]);
 }

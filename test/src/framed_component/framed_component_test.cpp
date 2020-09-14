@@ -3,7 +3,7 @@
 #include <munin/filled_box.hpp>
 #include <munin/frame.hpp>
 #include <munin/framed_component.hpp>
-#include <munin/render_surface.hpp>
+#include <munin/render_context.hpp>
 #include <munin/solid_frame.hpp>
 #include <gtest/gtest.h>
 
@@ -174,8 +174,9 @@ TEST(a_framed_component, draws_the_inner_component_inside_the_frame)
     
     terminalpp::canvas cvs({4, 4});
     munin::render_surface surface{cvs};
+    munin::render_context context{surface, munin::default_animation_timer};
     
-    comp->draw(surface, {{0, 0}, {4, 4}});
+    comp->draw(context, {{0, 0}, {4, 4}});
     
     ASSERT_EQ(default_attribute, cvs[0][0].attribute_);
     ASSERT_EQ(default_attribute, cvs[1][0].attribute_);

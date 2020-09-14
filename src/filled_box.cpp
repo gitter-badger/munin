@@ -1,5 +1,5 @@
 #include "munin/filled_box.hpp"
-#include "munin/render_surface.hpp"
+#include "munin/render_context.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 
 namespace munin {
@@ -50,12 +50,12 @@ terminalpp::extent filled_box::do_get_preferred_size() const
 // DO_DRAW
 // ==========================================================================
 void filled_box::do_draw(
-    render_surface &surface, terminalpp::rectangle const &region) const
+    render_context &context, terminalpp::rectangle const &region) const
 {
-    auto const element = fill_function_(surface);
+    auto const element = fill_function_(context);
     
     terminalpp::for_each_in_region(
-        surface,
+        context,
         region,
         [&element](terminalpp::element &elem, 
                    terminalpp::coordinate_type column, 
@@ -89,7 +89,7 @@ std::shared_ptr<filled_box> make_fill(terminalpp::element const &fill)
 // MAKE_FILLED_BOX
 // ==========================================================================
 std::shared_ptr<filled_box> make_fill(
-    std::function<terminalpp::element (render_surface &)> fill_function)
+    std::function<terminalpp::element (render_context &)> fill_function)
 {
     return std::make_shared<filled_box>(std::move(fill_function));
 }

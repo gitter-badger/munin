@@ -58,7 +58,7 @@ protected:
 
         ON_CALL(*mock_frame_, do_draw(_, _))
             .WillByDefault(Invoke(
-                [this](auto &surface, auto const &region)
+                [this](auto &context, auto const &region)
                 {
                     auto const &focus_element = terminalpp::element{
                         frame_glyph,
@@ -66,7 +66,7 @@ protected:
                     };
 
                     terminalpp::for_each_in_region(
-                        surface,
+                        context,
                         region,
                         [&focus_element](terminalpp::element &elem, 
                             terminalpp::coordinate_type column, 
@@ -90,13 +90,14 @@ protected:
 
     terminalpp::canvas canvas_{{3, 3}};
     munin::render_surface surface_{canvas_};
+    munin::render_context context_{surface_, munin::default_animation_timer};
 };
 
 }
 
 TEST_F(a_framed_component_with_an_inner_component, has_the_lowlight_attribute_when_the_inner_component_does_not_have_focus)
 {
-    framed_component_->draw(surface_, {{}, framed_component_->get_size()});
+    framed_component_->draw(context_, {{}, framed_component_->get_size()});
 
     auto const expected_element = terminalpp::element {
         frame_glyph,
@@ -111,7 +112,7 @@ TEST_F(a_framed_component_with_an_inner_component, has_the_highlight_attribute_w
     ON_CALL(*mock_inner_, do_has_focus())
         .WillByDefault(Return(true));
 
-    framed_component_->draw(surface_, {{}, framed_component_->get_size()});
+    framed_component_->draw(context_, {{}, framed_component_->get_size()});
 
     auto const expected_element = terminalpp::element {
         frame_glyph,

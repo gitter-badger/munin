@@ -113,9 +113,9 @@ void component::set_cursor_position(terminalpp::point const &position)
 // DRAW
 // ==========================================================================
 void component::draw(
-    render_surface &surface, terminalpp::rectangle const &region) const
+    render_context &context, terminalpp::rectangle const &region) const
 {
-    do_draw(surface, region);
+    do_draw(context, region);
 }
 
 // ==========================================================================

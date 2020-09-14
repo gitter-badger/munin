@@ -1,5 +1,5 @@
 #include "munin/edit.hpp"
-#include "munin/render_surface.hpp"
+#include "munin/render_context.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/ansi/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
@@ -113,7 +113,7 @@ struct edit::impl
                 break;
                 
             case terminalpp::vk::bs:
-                [[fallthrough]];
+                // Fall-through
             case terminalpp::vk::del:
                 handle_backspace();
                 break;
@@ -299,13 +299,13 @@ void edit::do_set_cursor_position(terminalpp::point const& position)
 // DO_DRAW
 // ==========================================================================
 void edit::do_draw(
-    render_surface &surface,
+    render_context &context,
     terminalpp::rectangle const &region) const
 {
     auto const size = get_size();
     
     terminalpp::for_each_in_region(
-        surface,
+        context,
         region,
         [=](terminalpp::element &elem,
             terminalpp::coordinate_type column,

@@ -1,7 +1,7 @@
 #include "viewport_test.hpp"
 #include "fill_canvas.hpp"
 #include <munin/edit.hpp>
-#include <munin/render_surface.hpp>
+#include <munin/render_context.hpp>
 #include <munin/viewport.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
@@ -38,8 +38,9 @@ TEST_F(a_new_viewport, of_zero_size_draws_nothing)
     viewport_->set_size({0, 0});
     
     munin::render_surface surface{cvs};
-    surface.offset_by({1, 1});
-    viewport_->draw(surface, {{}, viewport_->get_size()});
+    munin::render_context context{surface, munin::default_animation_timer};
+    context.offset_by({1, 1});
+    viewport_->draw(context, {{}, viewport_->get_size()});
     
     ASSERT_EQ(terminalpp::element{'x'}, cvs[0][0]);
     ASSERT_EQ(terminalpp::element{'x'}, cvs[1][0]);
@@ -342,7 +343,7 @@ TEST_F(a_viewport, draws_offset_area_when_viewport_position_is_offset)
 
     ON_CALL(*tracked_component_, do_draw(_, _))
         .WillByDefault(Invoke(
-            [](munin::render_surface& surface, 
+            [](munin::render_context& context, 
                terminalpp::rectangle const &region)
             {
                 // +---+---+---+---+
@@ -353,7 +354,7 @@ TEST_F(a_viewport, draws_offset_area_when_viewport_position_is_offset)
                 // | i | j | k | l |
                 // +---+---+---+---+
                 terminalpp::for_each_in_region(
-                    surface,
+                    context,
                     region,
                     [](terminalpp::element &elem,
                        terminalpp::coordinate_type column,
@@ -375,7 +376,8 @@ TEST_F(a_viewport, draws_offset_area_when_viewport_position_is_offset)
     tracked_component_->on_cursor_position_changed();
 
     munin::render_surface surface{cvs};
-    viewport_->draw(surface, {{}, viewport_->get_size()});
+    munin::render_context context{surface, munin::default_animation_timer};
+    viewport_->draw(context, {{}, viewport_->get_size()});
     
     ASSERT_EQ(terminalpp::element{'f'}, cvs[0][0]);
     ASSERT_EQ(terminalpp::element{'g'}, cvs[1][0]);

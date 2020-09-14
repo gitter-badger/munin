@@ -1,5 +1,5 @@
 #include "container_test.hpp"
-#include <munin/render_surface.hpp>
+#include <munin/render_context.hpp>
 
 using testing::_;
 using testing::Return;
@@ -14,6 +14,7 @@ TEST_F(a_container, draws_subcomponent_when_drawn)
 
     terminalpp::canvas canvas({2, 2});
     munin::render_surface surface{canvas};
+    munin::render_context context{surface, munin::default_animation_timer};
 
     EXPECT_CALL(*component, do_get_position())
         .WillOnce(Return(terminalpp::point(0, 0)));
@@ -22,7 +23,7 @@ TEST_F(a_container, draws_subcomponent_when_drawn)
 
     EXPECT_CALL(*component, do_draw(_, terminalpp::rectangle({0, 0}, {2, 2})));
 
-    container.draw(surface, terminalpp::rectangle({0, 0}, {2, 2}));
+    container.draw(context, terminalpp::rectangle({0, 0}, {2, 2}));
 }
 
 TEST_F(a_container, draws_partial_subcomponents_when_partially_drawn)
@@ -35,6 +36,7 @@ TEST_F(a_container, draws_partial_subcomponents_when_partially_drawn)
 
     terminalpp::canvas canvas({2, 2});
     munin::render_surface surface{canvas};
+    munin::render_context context{surface, munin::default_animation_timer};
 
     EXPECT_CALL(*component, do_get_position())
         .WillOnce(Return(terminalpp::point(0, 0)));
@@ -43,7 +45,7 @@ TEST_F(a_container, draws_partial_subcomponents_when_partially_drawn)
 
     EXPECT_CALL(*component, do_draw(_, terminalpp::rectangle({1, 0}, {1, 2})));
 
-    container.draw(surface, terminalpp::rectangle({1, 0}, {1, 2}));
+    container.draw(context, terminalpp::rectangle({1, 0}, {1, 2}));
 }
 
 TEST_F(a_container, does_not_draw_subcomponents_outside_of_draw_region)
@@ -56,13 +58,14 @@ TEST_F(a_container, does_not_draw_subcomponents_outside_of_draw_region)
 
     terminalpp::canvas canvas({2, 2});
     munin::render_surface surface{canvas};
+    munin::render_context context{surface, munin::default_animation_timer};
 
     EXPECT_CALL(*component, do_get_position())
         .WillOnce(Return(terminalpp::point(1, 0)));
     EXPECT_CALL(*component, do_get_size())
         .WillOnce(Return(terminalpp::extent(1, 2)));
 
-    container.draw(surface, terminalpp::rectangle({0, 0}, {1, 2}));
+    container.draw(context, terminalpp::rectangle({0, 0}, {1, 2}));
 }
 
 TEST_F(a_container, offsets_canvas_before_drawing_offset_components)
@@ -75,6 +78,7 @@ TEST_F(a_container, offsets_canvas_before_drawing_offset_components)
 
     terminalpp::canvas canvas({2, 2});
     munin::render_surface surface{canvas};
+    munin::render_context context{surface, munin::default_animation_timer};
 
     EXPECT_CALL(*component, do_get_position())
         .WillOnce(Return(terminalpp::point(1, 0)));
@@ -83,7 +87,7 @@ TEST_F(a_container, offsets_canvas_before_drawing_offset_components)
 
     EXPECT_CALL(*component, do_draw(_, terminalpp::rectangle({0, 0}, {1, 2})));
 
-    container.draw(surface, terminalpp::rectangle({0, 0}, {2, 2}));
+    container.draw(context, terminalpp::rectangle({0, 0}, {2, 2}));
 }
 
 TEST_F(a_container, draws_many_components_when_drawing)
@@ -101,6 +105,7 @@ TEST_F(a_container, draws_many_components_when_drawing)
 
     terminalpp::canvas canvas({2, 2});
     munin::render_surface surface{canvas};
+    munin::render_context context{surface, munin::default_animation_timer};
 
     EXPECT_CALL(*component_tl, do_get_position())
         .WillOnce(Return(terminalpp::point(0, 0)));
@@ -126,5 +131,5 @@ TEST_F(a_container, draws_many_components_when_drawing)
         .WillOnce(Return(terminalpp::extent(2, 2)));
     EXPECT_CALL(*component_br, do_draw(_, terminalpp::rectangle({0, 0}, {1, 1})));
 
-    container.draw(surface, terminalpp::rectangle({1, 1}, {2, 2}));
+    container.draw(context, terminalpp::rectangle({1, 1}, {2, 2}));
 }

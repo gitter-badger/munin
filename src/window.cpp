@@ -1,6 +1,6 @@
 #include "munin/window.hpp"
 #include "munin/component.hpp"
-#include "munin/render_surface.hpp"
+#include "munin/render_context.hpp"
 #include "munin/detail/json_adaptors.hpp"
 #include <terminalpp/screen.hpp>
 #include <terminalpp/terminal.hpp>
@@ -16,8 +16,9 @@ struct window::impl
     // ======================================================================
     // CONSTRUCTOR
     // ======================================================================
-    explicit impl(window &self)
-      : self_(self)
+    explicit impl(window &self, animation_timer& timer)
+      : self_(self),
+        animation_timer_(timer)
     {
     }
     
@@ -40,6 +41,7 @@ struct window::impl
     }
     
     window &self_;
+    animation_timer &animation_timer_;
     std::shared_ptr<component> content_;
 
     std::vector<terminalpp::rectangle> repaint_regions_;
@@ -50,8 +52,8 @@ struct window::impl
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-window::window(std::shared_ptr<component> content)
-  : pimpl_(std::make_unique<impl>(*this))
+window::window(std::shared_ptr<component> content, animation_timer &timer)
+  : pimpl_(std::make_unique<impl>(*this, timer))
 {
     pimpl_->content_ = std::move(content);
     
@@ -99,9 +101,10 @@ std::string window::repaint(
     }
 
     render_surface surface(cvs);
+    render_context context(surface, pimpl_->animation_timer_);
     for (auto const &region : repaint_regions)
     {
-        pimpl_->content_->draw(surface, region);
+        pimpl_->content_->draw(context, region);
     }
 
     return pimpl_->screen_.draw(term, cvs);

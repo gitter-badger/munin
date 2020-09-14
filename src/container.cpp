@@ -1,7 +1,7 @@
 #include "munin/container.hpp"
 #include "munin/layout.hpp"
 #include "munin/null_layout.hpp"
-#include "munin/render_surface.hpp"
+#include "munin/render_context.hpp"
 #include "munin/detail/algorithm.hpp"
 #include "munin/detail/json_adaptors.hpp"
 #include <terminalpp/ansi/mouse.hpp>
@@ -352,11 +352,11 @@ struct container::impl
     // DRAW
     // ======================================================================
     void draw(
-        render_surface &surface, terminalpp::rectangle const &region) const
+        render_context &context, terminalpp::rectangle const &region) const
     {
         for (auto const &comp : components_)
         {
-            draw_component(comp, surface, region);
+            draw_component(comp, context, region);
         }
     }
 
@@ -487,7 +487,7 @@ private:
     // ======================================================================
     void draw_component(
         std::shared_ptr<component> const &comp,
-        render_surface &surface,
+        render_context &context,
         terminalpp::rectangle const &region) const
     {
         auto const component_region = terminalpp::rectangle {
@@ -506,22 +506,22 @@ private:
             // The canvas must have an offset applied to it so that the
             // inner component can pretend that it is being drawn with its
             // container being at position (0,0).
-            surface.offset_by({
+            context.offset_by({
                 component_region.origin.x,
                 component_region.origin.y
             });
 
             // Ensure that the offset is unapplied before exit of this
             // function.
-            BOOST_SCOPE_EXIT_ALL(&surface, &component_region)
+            BOOST_SCOPE_EXIT_ALL(&context, &component_region)
             {
-                surface.offset_by({
+                context.offset_by({
                     -component_region.origin.x,
                     -component_region.origin.y
                 });
             };
 
-            comp->draw(surface, draw_region.get());
+            comp->draw(context, draw_region.get());
         }
     }
 
@@ -826,9 +826,9 @@ void container::do_set_cursor_position(terminalpp::point const &position)
 // DO_DRAW
 // ==========================================================================
 void container::do_draw(
-    render_surface &surface, terminalpp::rectangle const &region) const
+    render_context &context, terminalpp::rectangle const &region) const
 {
-    pimpl_->draw(surface, region);
+    pimpl_->draw(context, region);
 }
 
 // ==========================================================================

@@ -1,12 +1,12 @@
 #include <munin/filled_box.hpp>
-#include <munin/render_surface.hpp>
+#include <munin/render_context.hpp>
 #include <gtest/gtest.h>
 
 TEST(a_filled_box, can_retrieve_its_fill_from_a_function)
 {
     terminalpp::element fill = 'x';
     
-    auto fill_function = [&fill](munin::render_surface &)
+    auto fill_function = [&fill](munin::render_context &)
     {
         return fill;
     };
@@ -14,10 +14,11 @@ TEST(a_filled_box, can_retrieve_its_fill_from_a_function)
     auto box = munin::make_fill(fill_function);
     box->set_size({2, 2});
     
-    terminalpp::canvas canvas({2, 2});
-    munin::render_surface surface(canvas);
+    terminalpp::canvas canvas{{2, 2}};
+    munin::render_surface surface{canvas};
+    munin::render_context context{surface, munin::default_animation_timer};
     
-    box->draw(surface, terminalpp::rectangle{{}, {2, 2}});
+    box->draw(context, terminalpp::rectangle{{}, {2, 2}});
     
     ASSERT_EQ('x', canvas[0][0]);
     ASSERT_EQ('x', canvas[0][1]);
@@ -26,7 +27,7 @@ TEST(a_filled_box, can_retrieve_its_fill_from_a_function)
     
     fill = 'y';
 
-    box->draw(surface, terminalpp::rectangle{{}, {2, 2}});
+    box->draw(context, terminalpp::rectangle{{}, {2, 2}});
     
     ASSERT_EQ('y', canvas[0][0]);
     ASSERT_EQ('y', canvas[0][1]);

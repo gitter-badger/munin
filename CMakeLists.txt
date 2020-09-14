@@ -103,6 +103,7 @@ target_sources(munin
         src/image.cpp
         src/layout.cpp
         src/null_layout.cpp
+        src/render_context.cpp
         src/render_surface.cpp
         src/solid_frame.cpp
         src/text_area.cpp

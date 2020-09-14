@@ -1,5 +1,5 @@
 #include "text_area_test.hpp"
-#include <munin/render_surface.hpp>
+#include <munin/render_context.hpp>
 
 class a_text_area_with_text_inserted : public a_text_area
 {
@@ -28,10 +28,11 @@ TEST_F(a_text_area_with_text_inserted, can_have_text_inserted_at_the_front)
     
     fill_canvas({5, 3});
     munin::render_surface surface{canvas_};
+    munin::render_context context{surface, munin::default_animation_timer};
     
     for (auto const &region : redraw_regions)
     {
-        text_area_.draw(surface, region);
+        text_area_.draw(context, region);
     }
 
     ASSERT_EQ(terminalpp::element{'c'}, canvas_[0][0]);
@@ -59,10 +60,11 @@ TEST_F(a_text_area_with_text_inserted, can_have_text_inserted_in_the_middle)
     
     fill_canvas({5, 3});
     munin::render_surface surface{canvas_};
+    munin::render_context context{surface, munin::default_animation_timer};
     
     for (auto const &region : redraw_regions)
     {
-        text_area_.draw(surface, region);
+        text_area_.draw(context, region);
     }
 
     ASSERT_EQ(terminalpp::element{'a'}, canvas_[0][0]);
@@ -90,10 +92,11 @@ TEST_F(a_text_area_with_text_inserted, can_have_text_inserted_that_pushes_existi
     
     fill_canvas({5, 3});
     munin::render_surface surface{canvas_};
+    munin::render_context context{surface, munin::default_animation_timer};
     
     for (auto const &region : redraw_regions)
     {
-        text_area_.draw(surface, region);
+        text_area_.draw(context, region);
     }
 
     ASSERT_EQ(terminalpp::element{'a'}, canvas_[0][0]);

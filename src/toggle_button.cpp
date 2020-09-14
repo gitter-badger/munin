@@ -25,7 +25,7 @@ toggle_button::toggle_button(bool checked)
   : pimpl_(boost::make_unique<impl>())
 {
     pimpl_->fill_ = 
-        make_fill([this](render_surface&) -> terminalpp::element
+        make_fill([this](render_context&) -> terminalpp::element
         {
             return pimpl_->toggle_state_
                  ? 'X'

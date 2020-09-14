@@ -1,6 +1,6 @@
 #include "fill_canvas.hpp"
 #include <munin/edit.hpp>
-#include <munin/render_surface.hpp>
+#include <munin/render_context.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/element.hpp>
 #include <terminalpp/virtual_key.hpp>
@@ -38,28 +38,29 @@ TEST_F(a_new_edit, has_its_cursor_at_home)
 
 TEST_F(a_new_edit, draws_blanks)
 {
-    terminalpp::canvas cvs{{4, 3}};
-    fill_canvas(cvs, 'x');
+    terminalpp::canvas canvas{{4, 3}};
+    fill_canvas(canvas, 'x');
     
     edit_->set_position({1, 1});
     edit_->set_size({2, 1});
     
-    munin::render_surface surface{cvs};
-    surface.offset_by({1, 1});
-    edit_->draw(surface, {{}, edit_->get_size()});
+    munin::render_surface surface{canvas};
+    munin::render_context context{surface, munin::default_animation_timer};
+    context.offset_by({1, 1});
+    edit_->draw(context, {{}, edit_->get_size()});
     
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][0]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[1][0]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[2][0]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[3][0]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][1]);
-    ASSERT_EQ(terminalpp::element{' '}, cvs[1][1]);
-    ASSERT_EQ(terminalpp::element{' '}, cvs[2][1]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[3][1]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][2]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[1][2]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[2][2]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[3][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[0][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[1][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[2][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[3][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[0][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[1][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[2][1]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[3][1]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[0][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[1][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[2][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[3][2]);
 }
 
 TEST_F(a_new_edit, inserting_text_changes_preferred_size_to_size_of_text)
@@ -77,15 +78,16 @@ TEST_F(a_new_edit, inserting_text_changes_preferred_size_to_size_of_text)
 
 TEST_F(a_new_edit, inserting_text_redraws_changed_text_area)
 {
-    terminalpp::canvas cvs{{4, 3}};
-    fill_canvas(cvs, 'x');
+    terminalpp::canvas canvas{{4, 3}};
+    fill_canvas(canvas, 'x');
     
     edit_->set_position({1, 1});
     edit_->set_size({2, 1});
     
-    munin::render_surface surface{cvs};
-    surface.offset_by({1, 1});
-    edit_->draw(surface, {{}, edit_->get_size()});
+    munin::render_surface surface{canvas};
+    munin::render_context context{surface, munin::default_animation_timer};
+    context.offset_by({1, 1});
+    edit_->draw(context, {{}, edit_->get_size()});
 
     
     edit_->on_redraw.connect(
@@ -93,30 +95,30 @@ TEST_F(a_new_edit, inserting_text_redraws_changed_text_area)
         {
             for (auto const &region : regions)
             {
-                edit_->draw(surface, region);
+                edit_->draw(context, region);
             }
         });
         
     edit_->insert_text("?!");
 
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][0]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[1][0]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[2][0]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[3][0]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][1]);
-    ASSERT_EQ(terminalpp::element{'?'}, cvs[1][1]);
-    ASSERT_EQ(terminalpp::element{'!'}, cvs[2][1]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[3][1]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][2]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[1][2]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[2][2]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[3][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[0][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[1][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[2][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[3][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[0][1]);
+    ASSERT_EQ(terminalpp::element{'?'}, canvas[1][1]);
+    ASSERT_EQ(terminalpp::element{'!'}, canvas[2][1]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[3][1]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[0][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[1][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[2][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[3][2]);
 }
 
 TEST_F(a_new_edit, draws_inserted_text_cursor_at_end)
 {
-    terminalpp::canvas cvs{{4, 3}};
-    fill_canvas(cvs, 'x');
+    terminalpp::canvas canvas{{4, 3}};
+    fill_canvas(canvas, 'x');
     
     edit_->set_position({1, 1});
     edit_->set_size({2, 1});
@@ -126,22 +128,23 @@ TEST_F(a_new_edit, draws_inserted_text_cursor_at_end)
     ASSERT_EQ(terminalpp::point(2, 0), edit_->get_cursor_position());
     ASSERT_TRUE(edit_->get_cursor_state());
     
-    munin::render_surface surface{cvs};
-    surface.offset_by({1, 1});
-    edit_->draw(surface, {{}, edit_->get_size()});
+    munin::render_surface surface{canvas};
+    munin::render_context context{surface, munin::default_animation_timer};
+    context.offset_by({1, 1});
+    edit_->draw(context, {{}, edit_->get_size()});
 
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][0]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[1][0]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[2][0]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[3][0]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][1]);
-    ASSERT_EQ(terminalpp::element{'z'}, cvs[1][1]);
-    ASSERT_EQ(terminalpp::element{'a'}, cvs[2][1]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[3][1]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][2]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[1][2]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[2][2]);
-    ASSERT_EQ(terminalpp::element{'x'}, cvs[3][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[0][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[1][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[2][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[3][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[0][1]);
+    ASSERT_EQ(terminalpp::element{'z'}, canvas[1][1]);
+    ASSERT_EQ(terminalpp::element{'a'}, canvas[2][1]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[3][1]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[0][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[1][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[2][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, canvas[3][2]);
 }
 
 namespace {
@@ -158,17 +161,18 @@ class receiving_keypresses
 public:
     receiving_keypresses()
       : cvs_({4, 3}),
-        surface_(cvs_)
+        surface_(cvs_),
+        context_(surface_, munin::default_animation_timer)
     {
         fill_canvas(cvs_, 'x');
-        surface_.offset_by({1, 1});
+        context_.offset_by({1, 1});
         
         edit_.on_redraw.connect(
             [this](auto const &regions)
             {
                 for (auto const &region : regions)
                 {
-                    edit_.draw(surface_, region);
+                    edit_.draw(context_, region);
                 }
             });
         
@@ -181,9 +185,10 @@ public:
     }
     
 protected:
-    munin::edit          edit_;
-    terminalpp::canvas   cvs_;
+    munin::edit           edit_;
+    terminalpp::canvas    cvs_;
     munin::render_surface surface_;
+    munin::render_context context_;
 };
 
 }

@@ -37,7 +37,8 @@ TEST_F(a_solid_frame_with_no_unicode_support, draws_a_border)
     
     terminalpp::canvas canvas({4, 4});
     munin::render_surface surface{canvas, surface_capabilities_};
-    frame_.draw(surface, {{}, {4, 4}});
+    munin::render_context context{surface, munin::default_animation_timer};
+    frame_.draw(context, {{}, {4, 4}});
 
     ASSERT_EQ(top_left_corner,     canvas[0][0]);
     ASSERT_EQ(horizontal_beam,     canvas[1][0]);
@@ -59,7 +60,8 @@ TEST_F(a_solid_frame_with_unicode_support, draws_a_border_with_box_drawing_glyph
     
     terminalpp::canvas canvas({4, 4});
     munin::render_surface surface{canvas, surface_capabilities_};
-    frame_.draw(surface, {{}, {4, 4}});
+    munin::render_context context{surface, munin::default_animation_timer};
+    frame_.draw(context, {{}, {4, 4}});
 
     ASSERT_EQ(unicode_top_left_corner,     canvas[0][0]);
     ASSERT_EQ(unicode_horizontal_beam,     canvas[1][0]);
@@ -87,7 +89,8 @@ TEST_F(a_solid_frame, can_be_displayed_with_a_custom_lowlight)
     
     terminalpp::canvas canvas({4, 4});
     munin::render_surface surface{canvas, surface_capabilities_};
-    frame_.draw(surface, {{}, {4, 4}});
+    munin::render_context context{surface, munin::default_animation_timer};
+    frame_.draw(context, {{}, {4, 4}});
 
     ASSERT_EQ(terminalpp::element('+', lowlight_attribute), canvas[0][0]);
     ASSERT_EQ(terminalpp::element('-', lowlight_attribute), canvas[1][0]);
@@ -136,7 +139,8 @@ TEST_F(a_solid_frame_with_an_associated_unfocussed_component, draws_a_lowlighted
 
     terminalpp::canvas canvas({4, 4});
     munin::render_surface surface{canvas, surface_capabilities_};
-    frame_.draw(surface, {{}, {4, 4}});
+    munin::render_context context{surface, munin::default_animation_timer};
+    frame_.draw(context, {{}, {4, 4}});
 
     ASSERT_EQ(top_left_corner,     canvas[0][0]);
     ASSERT_EQ(horizontal_beam,     canvas[1][0]);
@@ -162,7 +166,8 @@ TEST_F(a_solid_frame_with_an_associated_unfocussed_component, when_focussed_draw
 
     terminalpp::canvas canvas({4, 4});
     munin::render_surface surface{canvas, surface_capabilities_};
-    frame_.draw(surface, {{}, {4, 4}});
+    munin::render_context context{surface, munin::default_animation_timer};
+    frame_.draw(context, {{}, {4, 4}});
 
     ASSERT_EQ(terminalpp::element(top_left_corner,     highlight_attribute), canvas[0][0]);
     ASSERT_EQ(terminalpp::element(horizontal_beam,     highlight_attribute), canvas[1][0]);
@@ -249,7 +254,8 @@ TEST_F(a_solid_frame_with_an_associated_focussed_component, when_unfocussed_draw
 
     terminalpp::canvas canvas({4, 4});
     munin::render_surface surface{canvas, surface_capabilities_};
-    frame_.draw(surface, {{}, {4, 4}});
+    munin::render_context context{surface, munin::default_animation_timer};
+    frame_.draw(context, {{}, {4, 4}});
 
     ASSERT_EQ(top_left_corner,     canvas[0][0]);
     ASSERT_EQ(horizontal_beam,     canvas[1][0]);
@@ -281,7 +287,8 @@ TEST_F(a_solid_frame_with_an_associated_focussed_component, can_have_a_custom_hi
 
     terminalpp::canvas canvas({4, 4});
     munin::render_surface surface{canvas, surface_capabilities_};
-    frame_.draw(surface, {{}, {4, 4}});
+    munin::render_context context{surface, munin::default_animation_timer};
+    frame_.draw(context, {{}, {4, 4}});
 
     ASSERT_EQ(terminalpp::element(top_left_corner,     custom_highlight), canvas[0][0]);
     ASSERT_EQ(terminalpp::element(horizontal_beam,     custom_highlight), canvas[1][0]);

@@ -1,5 +1,5 @@
 #include <munin/button.hpp>
-#include <munin/render_surface.hpp>
+#include <munin/render_context.hpp>
 #include <terminalpp/ansi/mouse.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/virtual_key.hpp>
@@ -15,9 +15,10 @@ TEST(a_new_button, can_be_constructed_from_a_string)
     button->set_size(size);
     
     terminalpp::canvas canvas(size);
-    munin::render_surface surface(canvas);
+    munin::render_surface surface{canvas};
+    munin::render_context context{surface, munin::default_animation_timer};
     
-    button->draw(surface, {{}, size});
+    button->draw(context, {{}, size});
     
     ASSERT_EQ('O', canvas[2][1]);
     ASSERT_EQ('K', canvas[3][1]);
@@ -32,12 +33,13 @@ TEST(a_new_button, can_be_constructed_from_a_terminal_string)
     button->set_size(size);
     
     terminalpp::canvas canvas(size);
-    munin::render_surface surface(canvas);
+    munin::render_surface surface{canvas};
+    munin::render_context context{surface, munin::default_animation_timer};
     
-    button->draw(surface, {{}, size});
+    button->draw(context, {{}, size});
     
-    ASSERT_EQ('A', canvas[2][1]);
-    ASSERT_EQ('E', canvas[5][1]);
+    ASSERT_EQ('A', context[2][1]);
+    ASSERT_EQ('E', context[5][1]);
 }
 
 TEST(a_new_button, can_receive_focus)

@@ -1,5 +1,5 @@
 #include "munin/viewport.hpp"
-#include "munin/render_surface.hpp"
+#include "munin/render_context.hpp"
 #include <boost/algorithm/clamp.hpp>
 #include <boost/make_unique.hpp>
 #include <boost/range/adaptor/filtered.hpp>
@@ -103,7 +103,7 @@ struct viewport::impl
     // ======================================================================
     // DRAW
     // ======================================================================
-    void draw(render_surface& surface, terminalpp::rectangle const &region)
+    void draw(render_context& context, terminalpp::rectangle const &region)
     {
         auto const offset_region = terminalpp::rectangle{
             region.origin + anchor_position_,
@@ -111,29 +111,29 @@ struct viewport::impl
         };
 
         // The tracked component doesn't know it's in a viewport.  So, when
-        // drawing some subset of its viewable space, we adjust the surface
+        // drawing some subset of its viewable space, we adjust the context
         // so that it is aligned with the viewport.  
         //
         // As an example, consider that the viewport is offset by (2, 2).
         // This means that (2, 2) in the tracked component is (0, 0) in the
         // viewport.  By offsetting by (-2, -2) (the negative of the anchor
         // position), the tracked component draws in the correct space.
-        surface.offset_by({
+        context.offset_by({
             -anchor_position_.x,
             -anchor_position_.y
         });
 
         // Ensure that the offset is unapplied before exit of this
         // function.
-        BOOST_SCOPE_EXIT_ALL(&surface, this)
+        BOOST_SCOPE_EXIT_ALL(&context, this)
         {
-            surface.offset_by({
+            context.offset_by({
                 anchor_position_.x,
                 anchor_position_.y
             });
         };
 
-        tracked_component_->draw(surface, offset_region);
+        tracked_component_->draw(context, offset_region);
     }
 
     // ======================================================================
@@ -416,10 +416,10 @@ terminalpp::point viewport::do_get_cursor_position() const
 // DO_DRAW
 // ==========================================================================
 void viewport::do_draw(
-    render_surface &surface,
+    render_context &context,
     terminalpp::rectangle const &region) const
 {
-    pimpl_->draw(surface, region);
+    pimpl_->draw(context, region);
 }
 
 // ==========================================================================

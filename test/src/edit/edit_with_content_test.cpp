@@ -1,6 +1,6 @@
 #include "fill_canvas.hpp"
 #include <munin/edit.hpp>
-#include <munin/render_surface.hpp>
+#include <munin/render_context.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/virtual_key.hpp>
 #include <gtest/gtest.h>
@@ -24,14 +24,14 @@ protected:
     keypress_test()
     {
         fill_canvas(cvs_, 'x');
-        surface_.offset_by({1, 1});
+        context_.offset_by({1, 1});
         
         edit_.on_redraw.connect(
             [this](auto const &regions)
             {
                 for (auto const &region : regions)
                 {
-                    edit_.draw(surface_, region);
+                    edit_.draw(context_, region);
                 }
             });
         
@@ -45,6 +45,7 @@ protected:
     
     terminalpp::canvas cvs_{{6, 3}};
     munin::render_surface surface_{cvs_};
+    munin::render_context context_{surface_, munin::default_animation_timer};
     munin::edit edit_;
 };
 

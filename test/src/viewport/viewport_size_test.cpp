@@ -1,6 +1,6 @@
 #include "viewport_test.hpp"
 #include "fill_canvas.hpp"
-#include <munin/render_surface.hpp>
+#include <munin/render_context.hpp>
 #include <munin/viewport.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/canvas.hpp>
@@ -64,8 +64,9 @@ TEST_P(viewport_size_test, viewports_track_size_changes)
 
     terminalpp::canvas cvs{{5, 5}};
     munin::render_surface surface{cvs};
-    surface.offset_by({1, 1});
-    viewport_->draw(surface, {{}, viewport_->get_size()});
+    munin::render_context context{surface, munin::default_animation_timer};
+    context.offset_by({1, 1});
+    viewport_->draw(context, {{}, viewport_->get_size()});
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -141,11 +142,11 @@ TEST_F(a_viewport, with_an_offset_anchor_when_extended_southeast_reevaluates_anc
 
     ON_CALL(*tracked_component_, do_draw(_, _))
         .WillByDefault(Invoke(
-            [](munin::render_surface& surface, 
+            [](munin::render_context& context, 
                terminalpp::rectangle const &region)
             {
                 terminalpp::for_each_in_region(
-                    surface,
+                    context,
                     region,
                     [](terminalpp::element &elem,
                        terminalpp::coordinate_type column,
@@ -169,7 +170,8 @@ TEST_F(a_viewport, with_an_offset_anchor_when_extended_southeast_reevaluates_anc
     viewport_->set_size({2, 2});
 
     munin::render_surface surface{cvs};
-    viewport_->draw(surface, {{}, viewport_->get_size()});
+    munin::render_context context{surface, munin::default_animation_timer};
+    viewport_->draw(context, {{}, viewport_->get_size()});
     
     ASSERT_EQ(terminalpp::element{'g'}, cvs[0][0]);
     ASSERT_EQ(terminalpp::element{'h'}, cvs[1][0]);

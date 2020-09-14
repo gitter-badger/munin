@@ -1,5 +1,5 @@
 #include "munin/text_area.hpp"
-#include "munin/render_surface.hpp"
+#include "munin/render_context.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <boost/make_unique.hpp>
 #include <boost/range/algorithm/for_each.hpp>
@@ -203,11 +203,11 @@ bool text_area::do_get_cursor_state() const
 // DO_DRAW
 // ==========================================================================
 void text_area::do_draw(
-    render_surface &surface,
+    render_context &context,
     terminalpp::rectangle const &region) const
 {
     terminalpp::for_each_in_region(
-        surface, 
+        context, 
         region, 
         [this](terminalpp::element &elem,
                terminalpp::coordinate_type column,

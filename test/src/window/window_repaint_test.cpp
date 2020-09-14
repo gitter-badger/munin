@@ -125,7 +125,8 @@ protected :
     static constexpr terminalpp::extent const window_size {20, 40};
     
     std::shared_ptr<mock_component> content_ = std::make_shared<mock_component>();
-    std::shared_ptr<munin::window> window_ = std::make_shared<munin::window>(content_);
+    std::shared_ptr<munin::window> window_ = 
+        std::make_shared<munin::window>(content_, munin::default_animation_timer);
     terminalpp::terminal terminal_;
     terminalpp::canvas canvas_;
     terminalpp::extent content_size_;

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "munin/export.hpp"
-#include "munin/animation_timer.hpp"
 #include "munin/render_surface_capabilities.hpp"
 #include <terminalpp/canvas.hpp>
 
@@ -44,17 +43,14 @@ public :
     //* =====================================================================
     /// \brief Constructor
     //* =====================================================================
-    explicit render_surface(
-        terminalpp::canvas &cvs,
-        animation_timer& animation_timer = default_animation_timer);
+    explicit render_surface(terminalpp::canvas &cvs);
 
     //* =====================================================================
     //\ brief Constructor with explicit render surface capabilities
     //* =====================================================================
     render_surface(
         terminalpp::canvas &cvs,
-        render_surface_capabilities const &capabilities,
-        animation_timer& animation_timer = default_animation_timer);
+        render_surface_capabilities const &capabilities);
 
     //* =====================================================================
     /// \brief Returns true if the surface is known to support unicode.
@@ -79,11 +75,6 @@ public :
     //* =====================================================================
     column_proxy operator[](terminalpp::coordinate_type column);
 
-    //* =====================================================================
-    /// \brief Returns the current time in order to allow animations.
-    //* =====================================================================
-    std::chrono::steady_clock::time_point now() const;
-
 private :
     //* =====================================================================
     /// \brief Gets an element from the underlying canvas.
@@ -92,11 +83,9 @@ private :
         terminalpp::coordinate_type column, 
         terminalpp::coordinate_type row);
 
-    terminalpp::canvas &canvas_;
+    terminalpp::canvas                &canvas_;
     render_surface_capabilities const &capabilities_;
-    animation_timer& animation_timer_;
-
-    terminalpp::extent  offset_;
+    terminalpp::extent                 offset_;
 };
 
 }

@@ -1,5 +1,5 @@
 #include <munin/filled_box.hpp>
-#include <munin/render_surface.hpp>
+#include <munin/render_context.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <gtest/gtest.h>
 
@@ -27,7 +27,8 @@ TEST(a_new_filled_box, draws_whitespace_on_the_canvas)
         });
 
     munin::render_surface surface{canvas};
-    filled_box.draw(surface, {{}, filled_box.get_size()});
+    munin::render_context context{surface, munin::default_animation_timer};
+    filled_box.draw(context, {{}, filled_box.get_size()});
 
     ASSERT_EQ(terminalpp::element{' '}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{' '}, canvas[0][1]);

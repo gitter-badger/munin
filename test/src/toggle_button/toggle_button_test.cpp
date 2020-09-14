@@ -1,4 +1,4 @@
-#include <munin/render_surface.hpp>
+#include <munin/render_context.hpp>
 #include <munin/toggle_button.hpp>
 #include <terminalpp/ansi/mouse.hpp>
 #include <terminalpp/canvas.hpp>
@@ -16,8 +16,9 @@ TEST(a_default_constructed_toggle_button, shows_an_unchecked_state)
     
     terminalpp::canvas canvas(size);
     munin::render_surface surface(canvas);
+    munin::render_context context{surface, munin::default_animation_timer};
     
-    button->draw(surface, {{}, size});
+    button->draw(context, {{}, size});
     
     ASSERT_EQ(' ', canvas[1][1]);
 }
@@ -31,8 +32,9 @@ TEST(a_toggle_button_constructed_with_a_toggle_state, shows_a_checked_state)
     
     terminalpp::canvas canvas(size);
     munin::render_surface surface(canvas);
+    munin::render_context context{surface, munin::default_animation_timer};
     
-    button->draw(surface, {{}, size});
+    button->draw(context, {{}, size});
     
     ASSERT_NE(' ', canvas[1][1]);
 }
@@ -47,8 +49,9 @@ TEST(setting_the_toggle_state_of_a_toggle_button, shows_a_checked_state)
     
     terminalpp::canvas canvas(size);
     munin::render_surface surface(canvas);
+    munin::render_context context{surface, munin::default_animation_timer};
     
-    button->draw(surface, {{}, size});
+    button->draw(context, {{}, size});
     
     ASSERT_NE(' ', canvas[1][1]);
 }
@@ -63,8 +66,9 @@ TEST(clearing_the_toggle_state_of_a_toggle_button, shows_an_unchecked_state)
     
     terminalpp::canvas canvas(size);
     munin::render_surface surface(canvas);
+    munin::render_context context{surface, munin::default_animation_timer};
     
-    button->draw(surface, {{}, size});
+    button->draw(context, {{}, size});
     
     ASSERT_EQ(' ', canvas[1][1]);
 }

@@ -87,12 +87,12 @@ private:
     /// in order to draw onto the passed canvas.  A component must only draw
     /// the part of itself specified by the region.
     ///
-    /// \param surface the surface on which the component should draw itself.
+    /// \param context the context on which the component should draw itself.
     /// \param region the region relative to this component's origin that
     /// should be drawn.
     //* =====================================================================
     void do_draw(
-        render_surface &surface,
+        render_context &context,
         terminalpp::rectangle const &region) const override;
 
     //* =====================================================================

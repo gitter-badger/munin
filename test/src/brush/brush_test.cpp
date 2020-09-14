@@ -1,5 +1,5 @@
 #include <munin/brush.hpp>
-#include <munin/render_surface.hpp>
+#include <munin/render_context.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/canvas.hpp>
 #include <gtest/gtest.h>
@@ -34,18 +34,19 @@ TEST(a_brush_with_its_pattern_set_empty, draws_whitespace_on_the_canvas)
             elem = 'X';
         });
 
-    munin::render_surface cv{canvas};
-    brush.draw(cv, {{}, brush.get_size()});
+    munin::render_surface surface{canvas};
+    munin::render_context context{surface, munin::default_animation_timer};
+    brush.draw(context, {{}, brush.get_size()});
 
-    ASSERT_EQ(terminalpp::element{' '}, canvas[0][0]);
-    ASSERT_EQ(terminalpp::element{' '}, canvas[0][1]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[0][2]);
-    ASSERT_EQ(terminalpp::element{' '}, canvas[1][0]);
-    ASSERT_EQ(terminalpp::element{' '}, canvas[1][1]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[1][2]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][0]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][1]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][2]);
+    ASSERT_EQ(terminalpp::element{' '}, context[0][0]);
+    ASSERT_EQ(terminalpp::element{' '}, context[0][1]);
+    ASSERT_EQ(terminalpp::element{'X'}, context[0][2]);
+    ASSERT_EQ(terminalpp::element{' '}, context[1][0]);
+    ASSERT_EQ(terminalpp::element{' '}, context[1][1]);
+    ASSERT_EQ(terminalpp::element{'X'}, context[1][2]);
+    ASSERT_EQ(terminalpp::element{'X'}, context[2][0]);
+    ASSERT_EQ(terminalpp::element{'X'}, context[2][1]);
+    ASSERT_EQ(terminalpp::element{'X'}, context[2][2]);
 }
 
 TEST(a_brush_with_its_pattern_set_to_a_single_line_pattern, draws_that_pattern_repeatedly)
@@ -80,9 +81,10 @@ TEST(a_brush_with_its_pattern_set_to_a_single_line_pattern, draws_that_pattern_r
             elem = 'X';
         });
 
-    munin::render_surface cv{canvas};
-    cv.offset_by({1, 1});
-    brush.draw(cv, {{}, brush.get_size()});
+    munin::render_surface surface{canvas};
+    munin::render_context context{surface, munin::default_animation_timer};
+    context.offset_by({1, 1});
+    brush.draw(context, {{}, brush.get_size()});
 
     ASSERT_EQ(terminalpp::element{'X'}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{'X'}, canvas[1][0]);
@@ -157,9 +159,10 @@ TEST(a_brush_with_its_pattern_set_to_a_multi_line_pattern, draws_that_pattern_re
             elem = 'X';
         });
 
-    munin::render_surface cv{canvas};
-    cv.offset_by({1, 1});
-    brush.draw(cv, {{}, brush.get_size()});
+    munin::render_surface surface{canvas};
+    munin::render_context context{surface, munin::default_animation_timer};
+    context.offset_by({1, 1});
+    brush.draw(context, {{}, brush.get_size()});
 
     ASSERT_EQ(terminalpp::element{'X'}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{'X'}, canvas[1][0]);

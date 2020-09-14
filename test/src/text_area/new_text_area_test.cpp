@@ -1,5 +1,5 @@
 #include "text_area_test.hpp"
-#include <munin/render_surface.hpp>
+#include <munin/render_context.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/string.hpp>
 
@@ -35,7 +35,8 @@ TEST_F(a_new_text_area, draws_only_spaces)
     fill_canvas({3, 3});
 
     munin::render_surface surface{canvas_};
-    text_area_.draw(surface, {{}, text_area_.get_size()});
+    munin::render_context context{surface, munin::default_animation_timer};
+    text_area_.draw(context, {{}, text_area_.get_size()});
 
     ASSERT_EQ(terminalpp::element{' '}, canvas_[0][0]);
     ASSERT_EQ(terminalpp::element{' '}, canvas_[1][0]);
@@ -102,10 +103,11 @@ TEST_F(a_new_text_area, requests_a_redraw_and_draws_inserted_text_when_text_is_i
     
     fill_canvas({3, 3});
     munin::render_surface surface{canvas_};
+    munin::render_context context{surface, munin::default_animation_timer};
     
     for (auto const &region : redraw_regions)
     {
-        text_area_.draw(surface, region);
+        text_area_.draw(context, region);
     }
 
     ASSERT_EQ(terminalpp::element{'b'}, canvas_[0][0]);
@@ -136,10 +138,11 @@ TEST_F(a_new_text_area, flows_long_text_into_the_next_line)
     
     fill_canvas({3, 3});
     munin::render_surface surface{canvas_};
+    munin::render_context context{surface, munin::default_animation_timer};
     
     for (auto const &region : redraw_regions)
     {
-        text_area_.draw(surface, region);
+        text_area_.draw(context, region);
     }
 
     ASSERT_EQ(terminalpp::element{'c'}, canvas_[0][0]);
@@ -170,10 +173,11 @@ TEST_F(a_new_text_area, flows_newlines_when_drawing_text)
 
     fill_canvas({3, 3});    
     munin::render_surface surface{canvas_};
+    munin::render_context context{surface, munin::default_animation_timer};
     
     for (auto const &region : redraw_regions)
     {
-        text_area_.draw(surface, region);
+        text_area_.draw(context, region);
     }
 
     ASSERT_EQ(terminalpp::element{'c'}, canvas_[0][0]);
@@ -306,10 +310,11 @@ TEST_F(a_new_text_area, does_not_move_the_caret_when_inserting_at_a_specified_in
     
     fill_canvas({3, 3});
     munin::render_surface surface{canvas_};
+    munin::render_context context{surface, munin::default_animation_timer};
     
     for (auto const &region : redraw_regions)
     {
-        text_area_.draw(surface, region);
+        text_area_.draw(context, region);
     }
 
     ASSERT_EQ(terminalpp::element{'a'}, canvas_[0][0]);

@@ -1,5 +1,5 @@
 #include "container_test.hpp"
-#include <munin/render_surface.hpp>
+#include <munin/render_context.hpp>
 
 using testing::Return;
 using testing::_;
@@ -71,9 +71,10 @@ TEST_F(a_new_container, draws_nothing)
     container.set_size({1, 1});
     
     munin::render_surface surface{canvas};
-    container.draw(surface, {{0, 0}, {1, 1}});
+    munin::render_context context{surface, munin::default_animation_timer};
+    container.draw(context, {{0, 0}, {1, 1}});
     
-    ASSERT_EQ(terminalpp::element('?'), canvas[0][0]);
+    ASSERT_EQ(terminalpp::element('?'), context[0][0]);
 }
 
 TEST_F(a_container_with_one_component, reports_a_preferred_size_change_when_a_component_is_removed)

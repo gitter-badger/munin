@@ -11,6 +11,7 @@
 
 namespace munin {
 
+class animation_timer;
 class component;
 
 //* =========================================================================
@@ -24,7 +25,9 @@ public :
     /// \param content A component that this window displays.  May not be
     ///        null.
     //* =====================================================================
-    explicit window(std::shared_ptr<component> content);
+    explicit window(
+        std::shared_ptr<component> content,
+        animation_timer& timer);
     
     //* =====================================================================
     /// \brief Destructor
