@@ -32,5 +32,6 @@ public:
     }
 };
 
-extern null_animation_timer default_animation_timer;
+extern MUNIN_EXPORT null_animation_timer default_animation_timer;
+
 }
