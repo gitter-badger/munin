@@ -1,5 +1,5 @@
 #pragma once
-#include <munin/export.hpp>
+#include <munin/component.hpp>
 #include <chrono>
 
 namespace munin {
@@ -10,6 +10,14 @@ namespace munin {
 //* =========================================================================
 struct MUNIN_EXPORT animation_timer
 {
+    //* =====================================================================
+    /// \brief Schedules a repaint of the passed component
+    //* =====================================================================
+    virtual void repaint_component_in(
+        std::shared_ptr<component> const &comp,
+        terminalpp::rectangle bounds,
+        std::chrono::milliseconds delay) = 0;
+
     //* =====================================================================
     /// \brief Returns the current time
     //* =====================================================================
@@ -23,6 +31,16 @@ class MUNIN_EXPORT null_animation_timer
   : public animation_timer
 {
 public:
+    //* =====================================================================
+    /// \brief Schedules a repaint of the passed component
+    //* =====================================================================
+    void repaint_component_in(
+        std::shared_ptr<component> const &comp,
+        terminalpp::rectangle const bounds,
+        std::chrono::milliseconds const delay) override
+    {
+    }
+
     //* =====================================================================
     /// \brief Returns the current time
     //* =====================================================================
