@@ -6,17 +6,17 @@ class mock_animation_timer : public munin::animation_timer
 {
 public:
     //* =====================================================================
-    /// \brief Schedules a repaint of the passed component
+    /// \brief Schedules a function to be called in an amount of time.
+    /// This is used to schedule the requested component redraws.
     //* =====================================================================
-    MOCK_METHOD3(
-        repaint_component_in, 
+    MOCK_METHOD2(
+        do_call_function_in, 
         void (
-            std::shared_ptr<munin::component> const &,
-            terminalpp::rectangle,
+            std::function<void ()> const &,
             std::chrono::milliseconds));
 
     //* =====================================================================
     /// \brief Returns the current time
     //* =====================================================================
-    MOCK_CONST_METHOD0(now, std::chrono::steady_clock::time_point ());
+    MOCK_CONST_METHOD0(do_now, std::chrono::steady_clock::time_point ());
 };

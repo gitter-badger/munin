@@ -91,7 +91,7 @@ protected:
 TEST_F(an_animated_component, draws_initial_frame_at_time_0)
 {
     auto const time_now = std::chrono::steady_clock::now();
-    ON_CALL(animation_timer_, now())
+    ON_CALL(animation_timer_, do_now())
         .WillByDefault(Return(time_now));
 
     component_->draw(context_, {{0, 0}, {3, 3}});
@@ -110,12 +110,12 @@ TEST_F(an_animated_component, draws_initial_frame_at_time_0)
 TEST_F(an_animated_component, draws_initial_frame_before_change_time)
 {
     auto const time_now = std::chrono::steady_clock::now();
-    ON_CALL(animation_timer_, now())
+    ON_CALL(animation_timer_, do_now())
         .WillByDefault(Return(time_now));
 
     component_->draw(context_, {{0, 0}, {3, 3}});
 
-    ON_CALL(animation_timer_, now())
+    ON_CALL(animation_timer_, do_now())
         .WillByDefault(Return(time_now + (frame_change_time - 1ms)));
 
     component_->draw(context_, {{0, 0}, {3, 3}});
@@ -134,12 +134,12 @@ TEST_F(an_animated_component, draws_initial_frame_before_change_time)
 TEST_F(an_animated_component, draws_updated_frame_after_change_time)
 {
     auto const time_now = std::chrono::steady_clock::now();
-    ON_CALL(animation_timer_, now())
+    ON_CALL(animation_timer_, do_now())
         .WillByDefault(Return(time_now));
 
     component_->draw(context_, {{0, 0}, {3, 3}});
 
-    ON_CALL(animation_timer_, now())
+    ON_CALL(animation_timer_, do_now())
         .WillByDefault(Return(time_now + frame_change_time));
 
     component_->draw(context_, {{0, 0}, {3, 3}});

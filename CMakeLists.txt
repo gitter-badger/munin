@@ -57,6 +57,7 @@ add_library(munin)
 target_sources(munin
     PRIVATE
         include/munin/animation_timer.hpp
+        include/munin/asio_animation_timer.hpp
         include/munin/basic_component.hpp
         include/munin/brush.hpp
         include/munin/button.hpp
@@ -87,6 +88,7 @@ target_sources(munin
     
         src/aligned_layout.cpp
         src/animation_timer.cpp
+        src/asio_animation_timer.cpp
         src/basic_component.cpp
         src/brush.cpp
         src/button.cpp
