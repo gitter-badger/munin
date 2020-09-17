@@ -46,14 +46,14 @@ struct asio_animation_timer::impl
     boost::asio::steady_timer steady_timer_;
 
     // ======================================================================
-    // CALL_FUNCTION_IN
+    // CALL_FUNCTION_AT
     // ======================================================================
-    void call_function_in(
+    void call_function_at(
         std::function<void ()> const &fn,
-        std::chrono::milliseconds delay)
+        std::chrono::steady_clock::time_point const execution_time)
     {
         std::lock_guard<std::recursive_mutex> guard{queue_mutex_};
-        queue_.push({fn, now() + delay});
+        queue_.push({fn, execution_time});
         schedule_next_execution();
     }
 
@@ -126,13 +126,13 @@ asio_animation_timer::asio_animation_timer(boost::asio::io_context &ctx)
 asio_animation_timer::~asio_animation_timer() = default;
 
 // ==========================================================================
-// DO_CALL_FUNCTION_IN
+// DO_CALL_FUNCTION_AT
 // ==========================================================================
-void asio_animation_timer::do_call_function_in(
+void asio_animation_timer::do_call_function_at(
     std::function<void ()> const &fn,
-    std::chrono::milliseconds delay)
+    std::chrono::steady_clock::time_point const execution_time)
 {
-    pimpl_->call_function_in(fn, delay);
+    pimpl_->call_function_at(fn, execution_time);
 }
 
 // ==========================================================================

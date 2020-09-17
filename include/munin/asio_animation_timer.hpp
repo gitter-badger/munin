@@ -19,12 +19,12 @@ public:
 
 private:
     //* =====================================================================
-    /// \brief Schedules a function to be called in an amount of time.
+    /// \brief Schedules a function to be called at a certain time.
     /// This is used to schedule the requested component redraws.
     //* =====================================================================
-    void do_call_function_in(
+    void do_call_function_at(
         std::function<void ()> const &fn,
-        std::chrono::milliseconds delay) override;
+        std::chrono::steady_clock::time_point execution_time) override;
 
     //* =====================================================================
     /// \brief Returns the current time

@@ -19,10 +19,10 @@ public:
     //* =====================================================================
     /// \brief Schedules a redraw of the passed component
     //* =====================================================================
-    void redraw_component_in(
+    void redraw_component_at(
         std::shared_ptr<component> const &comp,
         terminalpp::rectangle bounds,
-        std::chrono::milliseconds delay);
+        std::chrono::steady_clock::time_point execution_time);
 
     //* =====================================================================
     /// \brief Returns the current time
@@ -31,12 +31,12 @@ public:
 
 private:
     //* =====================================================================
-    /// \brief Schedules a function to be called in an amount of time.
+    /// \brief Schedules a function to be called at a certain time.
     /// This is used to schedule the requested component redraws.
     //* =====================================================================
-    virtual void do_call_function_in(
+    virtual void do_call_function_at(
         std::function<void ()> const &fn,
-        std::chrono::milliseconds delay) = 0;
+        std::chrono::steady_clock::time_point execution_time) = 0;
 
     //* =====================================================================
     /// \brief Returns the current time
@@ -52,19 +52,19 @@ class MUNIN_EXPORT null_animation_timer
 {
 private:
     //* =====================================================================
-    /// \brief Schedules a function to be called in an amount of time.
+    /// \brief Schedules a function to be called at a certain time.
     /// This is used to schedule the requested component redraws.
     //* =====================================================================
-    void do_call_function_in(
+    void do_call_function_at(
         std::function<void ()> const &fn,
-        std::chrono::milliseconds const delay)
+        std::chrono::steady_clock::time_point const execution_time) override
     {
     }
 
     //* =====================================================================
     /// \brief Returns the current time
     //* =====================================================================
-    virtual std::chrono::steady_clock::time_point do_now() const 
+    virtual std::chrono::steady_clock::time_point do_now() const override
     {
         return {};
     }

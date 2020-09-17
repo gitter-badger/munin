@@ -10,10 +10,10 @@ public:
     /// This is used to schedule the requested component redraws.
     //* =====================================================================
     MOCK_METHOD2(
-        do_call_function_in, 
+        do_call_function_at, 
         void (
             std::function<void ()> const &,
-            std::chrono::milliseconds));
+            std::chrono::steady_clock::time_point));
 
     //* =====================================================================
     /// \brief Returns the current time
